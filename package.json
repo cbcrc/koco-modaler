@@ -1,0 +1,19 @@
+{
+  "name": "rc.component.modaler",
+  "version": "0.1.0",
+  "description": "",
+  "main": "modaler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Allov/rc.component.modaler.git"
+  },
+  "author": "Allov & w3max",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Allov/rc.component.modaler.js/issues"
+  },
+  "homepage": "https://github.com/Allov/rc.component.modaler.js"
+}
