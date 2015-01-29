@@ -1,5 +1,5 @@
-define(['jquery', 'bootstrap', 'knockout', 'lodash', 'crossroads', 'hasher', 'framework-utilities', 'knockout-configurator'],
-    function($, bootstrap, ko, _, crossroads, hasher, frameworkUtilities, knockoutConfigurator) {
+define(['jquery', 'bootstrap', 'knockout', 'lodash'],
+    function($, bootstrap, ko, _) {
         'use strict';
         
         function Framework() {
