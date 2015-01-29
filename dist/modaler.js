@@ -23,17 +23,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'crossroads', 'hasher', 'fr
 
                 return '';
             });
-
-
-            //TODO: ?
-            //Permet d'afficher un dialog si ?dialog=dialog_name
-            // self.currentRoute.subscribe(function(route) {
-            //     if (route.dialog) {
-            //         self.showDialog(route.dialog);
-            //     }
-            // });
-
-            configureRouting(self);
         }
 
         Framework.prototype.init = function( /*config*/ ) {
