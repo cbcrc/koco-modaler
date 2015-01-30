@@ -7,6 +7,10 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.$document = $(document);
 
+            koUtilities.registerComponent('modaler', {
+                isBower: true
+            });
+
             self.modalConfigs = [];
             self.currentModal = ko.observable(null);
 
@@ -33,10 +37,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.$modalElement.modal({
                 show: false
-            });
-
-            koUtilities.registerComponent('modaler', {
-                basePath: 'bower_components/rc.component.modaler/dist/components/'
             });
         };
 
