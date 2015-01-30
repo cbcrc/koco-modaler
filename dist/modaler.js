@@ -103,7 +103,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             modalConfig.name = name;
 
             var componentConfig = buildComponentConfigFromModalConfig(name, modalConfig);
-            this.registerComponent(componentConfig.name, componentConfig);
+            koUtilities.registerComponent(componentConfig.name, componentConfig);
 
             var finalModalConfig = applyModalConventions(name, modalConfig, componentConfig);
 
