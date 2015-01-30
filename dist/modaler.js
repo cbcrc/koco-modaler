@@ -1,8 +1,8 @@
-define(['jquery', 'bootstrap', 'knockout', 'lodash'],
-    function($, bootstrap, ko, _) {
+define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
+    function($, bootstrap, ko, _, koUtilities) {
         'use strict';
         
-        function Framework() {
+        function Modaler() {
             var self = this;
 
             self.$document = $(document);
@@ -25,7 +25,8 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
             });
         }
 
-        Framework.prototype.init = function( /*config*/ ) {
+        //TODO: Passer $modalElement en argument au lieu
+        Modaler.prototype.init = function( /*config*/ ) {
             var self = this;
 
             self.$modalElement = getModalElement();
@@ -34,19 +35,19 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
                 show: false
             });
 
-            self.registerComponent('modal', {
-                basePath: 'bower_components/rc.framework.js/dist/components/'
+            koUtilities.registerComponent('modaler', {
+                basePath: 'bower_components/rc.component.modaler/dist/components/'
             });
         };
 
-        Framework.prototype.showModal = function(name, params) {
+        Modaler.prototype.showModal = function(name, params) {
             var deferred = new $.Deferred();
             var self = this;
 
             var modalConfigToShow = findByName(self.modalConfigs, name);
 
             if (!modalConfigToShow) {
-                throw new Error('Framework.showModal - Unregistered modal: ' + name);
+                throw new Error('Modaler.showModal - Unregistered modal: ' + name);
             }
 
             var modal = {
@@ -59,7 +60,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
                     title: modalConfigToShow.title
                 },
                 componentName: modalConfigToShow.componentName,
-                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Framework.prototype.showModal
+                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.showModal
                 backdrop: modalConfigToShow.backdrop,
                 keyboard: modalConfigToShow.keyboard
             };
@@ -77,7 +78,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
             return deferred.promise();
         };
 
-        Framework.prototype.hideCurrentModal = function() {
+        Modaler.prototype.hideCurrentModal = function() {
             var deferred = new $.Deferred();
 
             var currentModal = this.currentModal();
@@ -93,9 +94,9 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
             return deferred.promise();
         };
 
-        Framework.prototype.registerModal = function(name, modalConfig) {
+        Modaler.prototype.registerModal = function(name, modalConfig) {
             if (!modalConfig.name) {
-                throw new Error('Framework.registerModal - Argument missing exception: name');
+                throw new Error('Modaler.registerModal - Argument missing exception: name');
             }
 
             var componentConfig = buildComponentConfigFromModalConfig(modalConfig);
@@ -127,7 +128,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
 
             return finalModalConfig;
         }
-
 
         function showModal(self, deferred, modal) {
             self.$modalElement.on('hidden.bs.modal', function( /*e*/ ) {
@@ -177,17 +177,17 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
         }
 
         function getModalElement() {
-            var $modalElement = $('modal');
+            var $modalerElement = $('modaler');
 
-            if ($modalElement.length < 1) {
-                throw new Error('Framework.showModal - The modal component is missing in the page.');
+            if ($modalerElement.length < 1) {
+                throw new Error('Modaler.showModal - The modaler component is missing in the page.');
             }
 
-            if ($modalElement.length > 1) {
-                throw new Error('Framework.showModal - There must be only one instance of the modal component in the page.');
+            if ($modalerElement.length > 1) {
+                throw new Error('Modaler.showModal - There must be only one instance of the modaler component in the page.');
             }
 
-            return $modalElement;
+            return $modalerElement;
         }
 
         function findByName(collection, name) {
@@ -198,5 +198,5 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash'],
             return result || null;
         }
 
-        return new Framework();
+        return new Modaler();
     });
