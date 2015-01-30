@@ -1,7 +1,7 @@
 define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
     function($, bootstrap, ko, _, koUtilities) {
         'use strict';
-        
+
         function Modaler() {
             var self = this;
 
@@ -95,11 +95,14 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
         };
 
         Modaler.prototype.registerModal = function(name, modalConfig) {
-            if (!modalConfig.name) {
+            if (!name) {
                 throw new Error('Modaler.registerModal - Argument missing exception: name');
             }
 
-            var componentConfig = buildComponentConfigFromModalConfig(modalConfig);
+            modalConfig = modalConfig || {};
+            modalConfig.name = name;
+
+            var componentConfig = buildComponentConfigFromModalConfig(name, modalConfig);
             this.registerComponent(componentConfig.name, componentConfig);
 
             var finalModalConfig = applyModalConventions(name, modalConfig, componentConfig);
