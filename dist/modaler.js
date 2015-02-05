@@ -41,39 +41,42 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
         };
 
         Modaler.prototype.showModal = function(name, params) {
+
             var deferred = new $.Deferred();
             var self = this;
 
-            var modalConfigToShow = findByName(self.modalConfigs, name);
+            koUtilities.koBindingDone(self.$modalElement, null, null, true).then(function() {
+                var modalConfigToShow = findByName(self.modalConfigs, name);
 
-            if (!modalConfigToShow) {
-                throw new Error('Modaler.showModal - Unregistered modal: ' + name);
-            }
+                if (!modalConfigToShow) {
+                    throw new Error('Modaler.showModal - Unregistered modal: ' + name);
+                }
 
-            var modal = {
-                settings: {
-                    close: function(data) {
-                        modal.data = data;
-                        return hideModal(self);
+                var modal = {
+                    settings: {
+                        close: function(data) {
+                            modal.data = data;
+                            return hideModal(self);
+                        },
+                        params: params,
+                        title: modalConfigToShow.title
                     },
-                    params: params,
-                    title: modalConfigToShow.title
-                },
-                componentName: modalConfigToShow.componentName,
-                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.showModal
-                backdrop: modalConfigToShow.backdrop,
-                keyboard: modalConfigToShow.keyboard
-            };
+                    componentName: modalConfigToShow.componentName,
+                    //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.showModal
+                    backdrop: modalConfigToShow.backdrop,
+                    keyboard: modalConfigToShow.keyboard
+                };
 
-            var currentModal = self.currentModal();
+                var currentModal = self.currentModal();
 
-            if (currentModal) {
-                currentModal.settings.close().then(function() {
+                if (currentModal) {
+                    currentModal.settings.close().then(function() {
+                        showModal(self, deferred, modal);
+                    });
+                } else {
                     showModal(self, deferred, modal);
-                });
-            } else {
-                showModal(self, deferred, modal);
-            }
+                }
+            });
 
             return deferred.promise();
         };
