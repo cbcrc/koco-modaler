@@ -1,5 +1,5 @@
-define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
-    function($, bootstrap, ko, _, koUtilities) {
+define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities', 'configs'],
+    function($, bootstrap, ko, _, koUtilities, configs) {
         'use strict';
 
         function Modaler() {
@@ -7,8 +7,14 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.$document = $(document);
 
+            var basePath = 'bower_components/knockout-modaler/src';
+
+            if (configs.koModaler && configs.koModaler.basePath) {
+                basePath = configs.koModaler.basePath;
+            }
+
             koUtilities.registerComponent('knockout-modaler', {
-                isBower: true
+                basePath: basePath
             });
 
             self.modalConfigs = [];
