@@ -7,7 +7,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.$document = $(document);
 
-            koUtilities.registerComponent('modaler', {
+            koUtilities.registerComponent('knockout-modaler', {
                 isBower: true
             });
 

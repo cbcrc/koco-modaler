@@ -1,19 +1,19 @@
 {
-  "name": "rc.component.modaler",
+  "name": "knockout-modaler",
   "version": "0.1.0",
   "description": "",
-  "main": "modaler.js",
+  "main": "src/modaler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Allov/rc.component.modaler.git"
+    "url": "https://github.com/Allov/knockout-modaler.git"
   },
   "author": "Allov & w3max",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Allov/rc.component.modaler.js/issues"
+    "url": "https://github.com/Allov/knockout-modaler/issues"
   },
-  "homepage": "https://github.com/Allov/rc.component.modaler.js"
+  "homepage": "https://github.com/Allov/knockout-modaler"
 }
