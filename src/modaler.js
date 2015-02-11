@@ -13,7 +13,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities', 'conf
                 basePath = configs.koModaler.basePath;
             }
 
-            koUtilities.registerComponent('knockout-modaler', {
+            koUtilities.registerComponent('modaler', {
                 basePath: basePath
             });
 
