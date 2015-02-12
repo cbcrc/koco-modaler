@@ -13,6 +13,7 @@ Knockout Modaler is a knockout component used to display modal screen. It is an 
 - [Using a modal](#using-a-modal)
     - [Displaying a modal](#displaying-a-modal)
     - [Closing and returning data from a modal](#closing-and-returning-data-from-a-modal)
+
 ## Installation
 
     bower install knockout-modaler
