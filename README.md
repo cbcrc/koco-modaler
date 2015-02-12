@@ -76,7 +76,7 @@ The options to be used when creating the modal.
         title: string       // defines the title of the modal when displaying.
         isBower: boolean    // defines if the component comes from bower, a default bower path will be used.
         basePath: string    // the base path to be use to find the component. It has to be the root of the default files (see below).
-        htmlOnly: boolean   // when creating a modal, it is possible that there would be no JavaScript linked to this dialog, it will assume so and load the html file using the naming convention (see below).
+        htmlOnly: boolean   // when creating a modal, it is possible that there would be no JavaScript linked to this modal, it will assume so and load the html file using the naming convention (see below).
     }
 
 ## Creating a modal component
@@ -143,7 +143,7 @@ To show a modal, you have to use the `showModal()` function.
 
 This function returns a `jQuery promise` and will resolve itself when the modal is closed.
 
-### Closing and returning data from a dialog
+### Closing and returning data from a modal
 
 Upon displaying a modal, it will present itself in fullscreen and blocking interface. The close button and any data to be transfered to the caller have to be handled by the callee.
 
