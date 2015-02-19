@@ -27,6 +27,8 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
                 return '';
             });
+
+            self.isModalOpenening = ko.observable(false);
         }
 
         //TODO: Passer $modalElement en argument au lieu
@@ -40,42 +42,61 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             });
         };
 
-        Modaler.prototype.showModal = function(name, params) {
+        Modaler.prototype.showModal = function(name, params, callback) {
             var self = this;
+
+            if (arguments.length === 2) { // if only two arguments were supplied
+                if (Object.prototype.toString.call(params) === '[object Function]') {
+                    callback = params;
+                    params = null;
+                }
+            }
+
             return new $.Deferred(function(dfd) {
+                try {
 
-                koUtilities.koBindingDone(self.$modalElement, null, null, true).then(function() {
-                    var modalConfigToShow = findByName(self.modalConfigs, name);
 
-                    if (!modalConfigToShow) {
-                        throw new Error('Modaler.showModal - Unregistered modal: ' + name);
-                    }
-
-                    var modal = {
-                        settings: {
-                            close: function(data) {
-                                modal.data = data;
-                                return hideModal(self);
-                            },
-                            params: params,
-                            title: modalConfigToShow.title
-                        },
-                        componentName: modalConfigToShow.componentName,
-                        //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.showModal
-                        backdrop: modalConfigToShow.backdrop,
-                        keyboard: modalConfigToShow.keyboard
-                    };
-
-                    var currentModal = self.currentModal();
-
-                    if (currentModal) {
-                        currentModal.settings.close().then(function() {
-                            showModal(self, dfd, modal);
-                        });
+                    if (self.isModalOpenening()) {
+                        dfd.reject('wait for first modal to be shown before calling showModal again');
                     } else {
-                        showModal(self, dfd, modal);
+                        self.isModalOpenening(true);
+
+                        isModalerReady(self).then(function() {
+                            var modalConfigToShow = findByName(self.modalConfigs, name);
+
+                            if (!modalConfigToShow) {
+                                throw new Error('Modaler.showModal - Unregistered modal: ' + name);
+                            }
+
+                            var modal = {
+                                settings: {
+                                    close: function(data) {
+                                        modal.data = data;
+                                        return hideModal(self);
+                                    },
+                                    params: params,
+                                    title: modalConfigToShow.title
+                                },
+                                componentName: modalConfigToShow.componentName,
+                                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.showModal
+                                backdrop: modalConfigToShow.backdrop,
+                                keyboard: modalConfigToShow.keyboard
+                            };
+
+                            var currentModal = self.currentModal();
+
+                            if (currentModal) {
+                                currentModal.settings.close().then(function() {
+                                    showModal(self, dfd, modal).always(callback);
+                                });
+                            } else {
+                                showModal(self, dfd, modal).always(callback);
+                            }
+                        });
                     }
-                });
+                } catch (err) {
+                    dfd.reject(err);
+                }
             }).promise();
         };
 
@@ -83,20 +104,31 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             var self = this;
             return new $.Deferred(function(dfd) {
                 try {
-                    var currentModal = self.currentModal();
-
-                    if (currentModal) {
-                        currentModal.settings.close().then(function() {
-                            dfd.resolve();
+                    if (self.isModalOpenening()) {
+                        var sub = self.isModalOpenening.subscribe(function() {
+                            sub.dispose();
+                            inner(self, dfd);
                         });
                     } else {
-                        dfd.resolve();
+                        inner(self, dfd);
                     }
                 } catch (err) {
                     dfd.reject(err);
                 }
             }).promise();
         };
+
+        function inner(self, dfd) {
+            var currentModal = self.currentModal();
+
+            if (currentModal) {
+                currentModal.settings.close().then(function() {
+                    dfd.resolve();
+                });
+            } else {
+                dfd.resolve();
+            }
+        }
 
         Modaler.prototype.registerModal = function(name, modalConfig) {
             if (!name) {
@@ -113,6 +145,10 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             this.modalConfigs.push(finalModalConfig);
         };
+
+        function isModalerReady(self) {
+            return koUtilities.koBindingDone(self.$modalElement, null, null, true);
+        }
 
         function buildComponentConfigFromModalConfig(name, modalConfig) {
             return {
@@ -155,12 +191,15 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     if (!self.$modalElement.hasClass('in')) {
                         self.$modalElement.modal('show')
                             .on('shown.bs.modal', function( /*e*/ ) {
+                                self.isModalOpenening(false);
                                 dfd.resolve(self.$modalElement);
                             });
                     } else {
+                        self.isModalOpenening(false);
                         dfd.resolve(self.$modalElement);
                     }
                 } catch (err) {
+                    self.isModalOpenening(false);
                     deferred.reject(err);
                     dfd.reject(err);
                 }
