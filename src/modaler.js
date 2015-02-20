@@ -2,6 +2,8 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
     function($, bootstrap, ko, _, koUtilities) {
         'use strict';
 
+        var KEYCODE_ESC = 27;
+
         function Modaler() {
             var self = this;
 
@@ -16,6 +18,12 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.isModalOpen = ko.computed(function() {
                 return !!self.currentModal();
+            });
+
+            self.focused = ko.observable(false);
+
+            self.isModalOpen.subscribe(function(isModalOpen) {
+                registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen);
             });
 
             self.currentModalTitle = ko.computed(function() {
@@ -55,7 +63,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             return new $.Deferred(function(dfd) {
                 try {
 
-
                     if (self.isModalOpenening()) {
                         dfd.reject('wait for first modal to be shown before calling showModal again');
                     } else {
@@ -74,6 +81,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                                         modal.data = data;
                                         return hideModal(self);
                                     },
+                                    shown: ko.observable(false),
                                     params: params,
                                     title: modalConfigToShow.title
                                 },
@@ -146,6 +154,22 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             this.modalConfigs.push(finalModalConfig);
         };
 
+        function registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen) {
+            var hideCurrentModal = function(e) {
+                switch (e.keyCode) {
+                    case KEYCODE_ESC:
+                        self.hideCurrentModal();
+                        break;
+                }
+            };
+
+            if ((isModalOpen && !self.currentModal().settings.params) || (isModalOpen && (self.currentModal().settings.params && !self.currentModal().settings.params.disableKeyEvents))) {
+                self.$document.on('keydown', hideCurrentModal);
+            } else {
+                self.$document.off('keydown', hideCurrentModal);
+            }
+        }
+
         function isModalerReady(self) {
             return koUtilities.koBindingDone(self.$modalElement, null, null, true);
         }
@@ -192,6 +216,10 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                         self.$modalElement.modal('show')
                             .on('shown.bs.modal', function( /*e*/ ) {
                                 self.isModalOpenening(false);
+                                self.currentModal().settings.shown(true);
+
+                                self.focused(self.currentModal().settings.params && !self.currentModal().settings.params.preventFocus);
+
                                 dfd.resolve(self.$modalElement);
                             });
                     } else {

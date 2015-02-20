@@ -1,7 +1,4 @@
 <!-- ko if: modaler.isModalOpen -->
-<!-- ko component: {
-    name: modaler.currentModal().componentName,
-    params: modaler.currentModal().settings
-} -->
+<div data-bind="component: { name: modaler.currentModal().componentName, params: modaler.currentModal().settings, hasFocus: modaler.focused }"></div>
 <!-- /ko -->
 <!-- /ko -->
