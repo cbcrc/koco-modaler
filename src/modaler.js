@@ -22,6 +22,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.focused = ko.observable(false);
 
+
             self.isModalOpen.subscribe(function(isModalOpen) {
                 registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen);
             });
@@ -115,6 +116,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     if (self.isModalOpenening()) {
                         var sub = self.isModalOpenening.subscribe(function() {
                             sub.dispose();
+                            registerOrUnregisterHideModalKeyboardShortcut(self, false);
                             inner(self, dfd);
                         });
                     } else {
@@ -154,19 +156,20 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             this.modalConfigs.push(finalModalConfig);
         };
 
-        function registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen) {
-            var hideCurrentModal = function(e) {
-                switch (e.keyCode) {
-                    case KEYCODE_ESC:
-                        self.hideCurrentModal();
-                        break;
-                }
-            };
+        Modaler.prototype.hideCurrentModalHandler = function(e) {
+            var self = this;
+            switch (e.keyCode) {
+                case KEYCODE_ESC:
+                    self.hideCurrentModal();
+                    break;
+            }
+        };
 
+        function registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen) {
             if ((isModalOpen && !self.currentModal().settings.params) || (isModalOpen && (self.currentModal().settings.params && !self.currentModal().settings.params.disableKeyEvents))) {
-                self.$document.on('keydown', hideCurrentModal);
+                self.$document.on('keydown', $.proxy(self.hideCurrentModalHandler, self));
             } else {
-                self.$document.off('keydown', hideCurrentModal);
+                self.$document.off('keydown', $.proxy(self.hideCurrentModalHandler, self));
             }
         }
 
