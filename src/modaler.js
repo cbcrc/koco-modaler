@@ -190,10 +190,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
         function applyModalConventions(name, modalConfig, componentConfig) {
             var finalModalConfig = $.extend({}, modalConfig);
 
-            if (!finalModalConfig.title) {
-                finalModalConfig.title = name;
-            }
-
             finalModalConfig.componentName = componentConfig.name;
 
             return finalModalConfig;
