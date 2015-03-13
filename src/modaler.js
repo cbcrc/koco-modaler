@@ -51,7 +51,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             });
         };
 
-        Modaler.prototype.showModal = function(name, params, callback) {
+        Modaler.prototype.show = function(name, params, callback) {
             var self = this;
 
             if (arguments.length === 2) { // if only two arguments were supplied
