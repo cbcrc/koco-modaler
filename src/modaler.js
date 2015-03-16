@@ -214,16 +214,10 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     if (!self.$modalElement.hasClass('in')) {
                         self.$modalElement.modal('show')
                             .on('shown.bs.modal', function( /*e*/ ) {
-                                self.isModalOpenening(false);
-                                self.currentModal().settings.shown(true);
-
-                                self.focused(self.currentModal().settings.params && !self.currentModal().settings.params.preventFocus);
-
-                                dfd.resolve(self.$modalElement);
+                                resolveShown(self, dfd);
                             });
                     } else {
-                        self.isModalOpenening(false);
-                        dfd.resolve(self.$modalElement);
+                        resolveShown(self, dfd);
                     }
                 } catch (err) {
                     self.isModalOpenening(false);
@@ -231,6 +225,15 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     dfd.reject(err);
                 }
             }).promise();
+        }
+
+        function resolveShown(self, dfd) {
+            self.isModalOpenening(false);
+            self.currentModal().settings.shown(true);
+
+            self.focused(self.currentModal().settings.params && !self.currentModal().settings.params.preventFocus);
+
+            dfd.resolve(self.$modalElement);            
         }
 
         function hideModal(self) {
