@@ -65,7 +65,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                 try {
 
                     if (self.isModalOpenening()) {
-                        dfd.reject('wait for first modal to be shown before calling showModal again');
+                        dfd.reject('wait for first modal to be shown before calling show again');
                     } else {
                         self.isModalOpenening(true);
 
@@ -73,7 +73,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                             var modalConfigToShow = findByName(self.modalConfigs, name);
 
                             if (!modalConfigToShow) {
-                                throw new Error('Modaler.showModal - Unregistered modal: ' + name);
+                                throw new Error('Modaler.show - Unregistered modal: ' + name);
                             }
 
                             var modal = {
@@ -87,7 +87,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                                     title: modalConfigToShow.title
                                 },
                                 componentName: modalConfigToShow.componentName,
-                                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.showModal
+                                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.show
                                 backdrop: modalConfigToShow.backdrop,
                                 keyboard: modalConfigToShow.keyboard
                             };
@@ -96,10 +96,10 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
                             if (currentModal) {
                                 currentModal.settings.close().then(function() {
-                                    showModal(self, dfd, modal).always(callback);
+                                    show(self, dfd, modal).always(callback);
                                 });
                             } else {
-                                showModal(self, dfd, modal).always(callback);
+                                show(self, dfd, modal).always(callback);
                             }
                         });
                     }
@@ -195,7 +195,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             return finalModalConfig;
         }
 
-        function showModal(self, deferred, modal) {
+        function show(self, deferred, modal) {
             return new $.Deferred(function(dfd) {
                 try {
                     self.$modalElement.on('hidden.bs.modal', function( /*e*/ ) {
@@ -254,11 +254,11 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             var $modalerElement = $('modaler');
 
             if ($modalerElement.length < 1) {
-                throw new Error('Modaler.showModal - The modaler component is missing in the page.');
+                throw new Error('Modaler.show - The modaler component is missing in the page.');
             }
 
             if ($modalerElement.length > 1) {
-                throw new Error('Modaler.showModal - There must be only one instance of the modaler component in the page.');
+                throw new Error('Modaler.show - There must be only one instance of the modaler component in the page.');
             }
 
             return $modalerElement;

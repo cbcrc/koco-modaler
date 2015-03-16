@@ -13,10 +13,13 @@ Knockout Modaler is a knockout component used to display modal screen. It is an 
 - [Using a modal](#using-a-modal)
     - [Displaying a modal](#displaying-a-modal)
     - [Closing and returning data from a modal](#closing-and-returning-data-from-a-modal)
+    - [Using the modal binding handler](#using-the-modal-binding-handler)
 
 ## Installation
 
-    bower install knockout-modaler
+``` bash
+bower install knockout-modaler
+```
 
 ## Usage
 
@@ -24,45 +27,51 @@ In your startup file, we need to do a number of things in order to fully initial
 
 ### startup.js
 
-    define(['knockout', 'modaler'],
-        function(ko, modaler) {
-            'use strict';
+``` javascript
+define(['knockout', 'modaler'],
+    function(ko, modaler) {
+        'use strict';
 
-            // First: registering a modal.
-            modaler.registerModal('modal_name', {
-                    title: 'modal_title'
-            });
-
-            // Second: bind the Knockout ViewModel with the modaler object.
-            ko.applyBindings({
-                    modaler: modaler
-                    // other objects come here
-            });
-
-            // Third: initialize the modaler.
-            modaler.init();
+        // First: registering a modal.
+        modaler.registerModal('modal_name', {
+                title: 'modal_title'
         });
+
+        // Second: bind the Knockout ViewModel with the modaler object.
+        ko.applyBindings({
+                modaler: modaler
+                // other objects come here
+        });
+
+        // Third: initialize the modaler.
+        modaler.init();
+    });
+```
 
 ### index.html
 
-    <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Test</title>
-        </head>
-        <body>
-            <modaler class="modal fade" data-bind="visible: modaler.isModalOpen" params="{ title: modaler.currentModalTitle }"></modaler>
-        </body>
-    </html>
+``` html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Test</title>
+    </head>
+    <body>
+        <modaler class="modal fade" data-bind="visible: modaler.isModalOpen" params="{ title: modaler.currentModalTitle }"></modaler>
+    </body>
+</html>
+```
 
 ## Registering a modal
 
 To register a modal, you have to use the `registerModal` function:
 
-    modaler.registerModal(name, options)
+``` javascript
+modaler.registerModal(name, options)
+```
 
 ### `name` parameter
 
@@ -72,12 +81,15 @@ The name of the knockout component being added. `-modal` will be appended automa
 
 The options to be used when creating the modal.
 
-    {
-        title: string       // defines the title of the modal when displaying.
-        isBower: boolean    // defines if the component comes from bower, a default bower path will be used.
-        basePath: string    // the base path to be use to find the component. It has to be the root of the default files (see below).
-        htmlOnly: boolean   // when creating a modal, it is possible that there would be no JavaScript linked to this modal, it will assume so and load the html file using the naming convention (see below).
-    }
+
+``` javascript
+{
+    title: string       // defines the title of the modal when displaying.
+    isBower: boolean    // defines if the component comes from bower, a default bower path will be used.
+    basePath: string    // the base path to be use to find the component. It has to be the root of the default files (see below).
+    htmlOnly: boolean   // when creating a modal, it is possible that there would be no JavaScript linked to this modal, it will assume so and load the html file using the naming convention (see below).
+}
+```
 
 ## Creating a modal component
 
@@ -87,49 +99,53 @@ The creation of a modal is based on the knockout component system.
 
 By convention, the name of the file has to be `[name]-modal-ui.js`, `[name]` being the name of your new modal. This file has to return a Knockout component structure.
 
-    define(["text!./test-modal.html", "knockout"], // beware of the first parameter where you have to define the html file to be used.
-        function(template, ko) {
-            'use strict';
+``` javascript
+define(["text!./test-modal.html", "knockout"], // beware of the first parameter where you have to define the html file to be used.
+    function(template, ko) {
+        'use strict';
 
-            var ViewModel = function(params, componentInfo) {
-                var self = this;
+        var ViewModel = function(params, componentInfo) {
+            var self = this;
 
-                self.close = function() {
-                    params.close();
-                };
-
-                return self;
+            self.close = function() {
+                params.close();
             };
 
-            return {
-                viewModel: {
-                    createViewModel: function(params, componentInfo) {
-                        return new ViewModel(params, componentInfo);
-                    }
-                },
-                template: template
-            };
-        });
+            return self;
+        };
+
+        return {
+            viewModel: {
+                createViewModel: function(params, componentInfo) {
+                    return new ViewModel(params, componentInfo);
+                }
+            },
+            template: template
+        };
+    });
+```
 
 
 ### HTML presentation
 
 When using a JavaScript UI handler, the name of this file has to be defined by you. However, if using the htmlOnly option, the component will be loading [name]-modal.html by convention.
 
-     <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
+``` html
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Modal title</h4>
-          </div>
-          <div class="modal-body">
-            <p>One fine body&hellip;</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
         </div>
-      </div><
+        <div class="modal-body">
+            <p>One fine body&hellip;</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+```
 
 ## Using a modal
 
@@ -137,9 +153,11 @@ Now that you created a modal, you may want to display it and possibly get data f
 
 ### Displaying a modal
 
-To show a modal, you have to use the `showModal()` function.
+To show a modal, you have to use the `show()` function.
 
-    modaler.showModal(name)
+```javascript
+modaler.show(name)
+```
 
 This function returns a `jQuery promise` and will resolve itself when the modal is closed.
 
@@ -151,15 +169,19 @@ Upon displaying a modal, it will present itself in fullscreen and blocking inter
 
 The [JavaScript UI handler](#javascript-ui-handler) will receive a `close` function in its `params` parameter.
 
-    close(data)
+```javascript
+close(data);
+```
 
 The `data` parameter is an object and will be passed as-is to the caller.
 
-Since `showModal` returns a promise, you have to use the `then` function to claim the returned data.
+Since `show` returns a promise, you have to use the `then` function to claim the returned data.
 
-    modaler.showModal('name').then(function(data) {
-            console.log(data);
-        });
+```javascript
+modaler.show('name').then(function(data) {
+        console.log(data);
+    });
+```
 
 #### Closing
 
@@ -168,4 +190,28 @@ To close a modal, you can:
 - call `close()` without any parameter from inside the [JavaScript UI Handler](#javascript-ui-handler)
 - call `modaler.hideCurrentModal()` from anywhere which will cause the currently displayed modal to close whitout sending any data.
 
-*Remark*: It is impossible to have two modals displayed at the same time, modaler will close the current modal when `showModal()` is called.
+*Remark*: It is impossible to have two modals displayed at the same time, modaler will close the current modal when `show()` is called.
+
+### Using the modal binding handler
+
+A `binding handler` comes with `modaler` to help you display modals efficiently.
+
+```html
+<button type="button" data-bind="modal: 'name'"></button>
+```
+
+The `binding handler` will handle clicks and set the focus back on the button once it is closed. There are several parameters that can be used:
+
+```javascript
+{
+    name: 'name',           // name of the modal to be shown
+    params: {},             // parameters to be passed to the modal.
+    shown: function,        // callback when the modal is on screen.
+    closed: function(data), // callback when the modal is closed
+    failed: function(err),  // callback when the modal has failed. Note that this is called when there is an actual error, not when the user click cancel.
+}
+```
+
+```html
+<button type="button" data-bind="modal: { name: 'name', closed: callbackClosed }"></button>
+```
