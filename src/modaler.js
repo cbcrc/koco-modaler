@@ -4,6 +4,16 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
         var KEYCODE_ESC = 27;
 
+        var TRANSITION_DURATION = 300;
+        if ($.fn.modal.Constructor && $.fn.modal.Constructor.TRANSITION_DURATION) {
+            TRANSITION_DURATION = $.fn.modal.Constructor.TRANSITION_DURATION;
+        }
+
+        var BACKDROP_TRANSITION_DURATION = 150;
+        if ($.fn.modal.Constructor && $.fn.modal.Constructor.BACKDROP_TRANSITION_DURATION) {
+            BACKDROP_TRANSITION_DURATION = $.fn.modal.Constructor.BACKDROP_TRANSITION_DURATION;
+        }
+
         function Modaler() {
             var self = this;
 
@@ -15,6 +25,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.modalConfigs = [];
             self.currentModal = ko.observable(null);
+            self.modalQueue = [];
 
             self.isModalOpen = ko.computed(function() {
                 return !!self.currentModal();
@@ -37,7 +48,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                 return '';
             });
 
-            self.isModalOpenening = ko.observable(false);
+            self.isModalOpening = ko.observable(false);
         }
 
         //TODO: Passer $modalElement en argument au lieu
@@ -61,74 +72,73 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                 }
             }
 
-            return new $.Deferred(function(dfd) {
-                try {
+            var dfd = $.Deferred();
 
-                    if (self.isModalOpenening()) {
-                        dfd.reject('wait for first modal to be shown before calling show again');
-                    } else {
-                        self.isModalOpenening(true);
+            var modalConfigToShow = findByName(self.modalConfigs, name);
 
-                        isModalerReady(self).then(function() {
-                            var modalConfigToShow = findByName(self.modalConfigs, name);
+            if (!modalConfigToShow) {
+                throw new Error('Modaler.show - Unregistered modal: ' + name);
+            }
 
-                            if (!modalConfigToShow) {
-                                throw new Error('Modaler.show - Unregistered modal: ' + name);
-                            }
+            var modal = {
+                settings: {
+                    close: function(data) {
+                        modal.data = data;
 
-                            var modal = {
-                                settings: {
-                                    close: function(data) {
-                                        modal.data = data;
-                                        return hideModal(self);
-                                    },
-                                    shown: ko.observable(false),
-                                    params: params,
-                                    title: modalConfigToShow.title
-                                },
-                                componentName: modalConfigToShow.componentName,
-                                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.show
-                                backdrop: modalConfigToShow.backdrop,
-                                keyboard: modalConfigToShow.keyboard
-                            };
-
-                            var currentModal = self.currentModal();
-
-                            if (currentModal) {
-                                currentModal.settings.close().then(function() {
-                                    show(self, dfd, modal).always(callback);
-                                });
-                            } else {
-                                show(self, dfd, modal).always(callback);
-                            }
+                        var hide = hideModal(self);
+                        hide.done(function () {
+                            showQueuedModal(self);
                         });
-                    }
-                } catch (err) {
-                    dfd.reject(err);
-                }
-            }).promise();
+
+                        return hide;
+                    },
+                    shown: ko.observable(false),
+                    params: params,
+                    title: modalConfigToShow.title
+                },
+                deferred: dfd,
+                callback: callback,
+                componentName: modalConfigToShow.componentName,
+                //TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.show
+                backdrop: modalConfigToShow.backdrop,
+                keyboard: modalConfigToShow.keyboard
+            };
+
+            if (self.isModalOpening() || self.currentModal()) {
+                self.modalQueue.push(modal);
+            } else {
+                self.isModalOpening(true);
+
+                isModalerReady(self).then(function() {
+                    show(self, modal).always(modal.callback);
+                });
+            }
+
+            return dfd.promise();
         };
 
         Modaler.prototype.hideCurrentModal = function() {
             var self = this;
-            return new $.Deferred(function(dfd) {
-                try {
-                    if (self.isModalOpenening()) {
-                        var sub = self.isModalOpenening.subscribe(function() {
-                            sub.dispose();
-                            registerOrUnregisterHideModalKeyboardShortcut(self, false);
-                            inner(self, dfd);
-                        });
-                    } else {
-                        inner(self, dfd);
-                    }
-                } catch (err) {
-                    dfd.reject(err);
+            var dfd = $.Deferred();
+
+            try {
+                if (self.isModalOpening()) {
+                    var sub = self.isModalOpening.subscribe(function() {
+                        sub.dispose();
+                        registerOrUnregisterHideModalKeyboardShortcut(self, false);
+                        hideCurrentModal(self, dfd);
+                    });
+                } else {
+                    hideCurrentModal(self, dfd);
                 }
-            }).promise();
+            } catch (err) {
+                dfd.reject(err);
+            }
+
+            return dfd.promise();
         };
 
-        function inner(self, dfd) {
+        function hideCurrentModal(self, dfd) {
             var currentModal = self.currentModal();
 
             if (currentModal) {
@@ -195,62 +205,80 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             return finalModalConfig;
         }
 
-        function show(self, deferred, modal) {
-            return new $.Deferred(function(dfd) {
-                try {
-                    self.$modalElement.on('hidden.bs.modal', function( /*e*/ ) {
-                        self.currentModal(null);
-                        deferred.resolve(modal.data);
-                    });
+        function show(self, modal) {
+            self.isModalOpening(true);
 
-                    self.currentModal(modal);
+            var dfd = $.Deferred();
 
-                    self.$modalElement.removeData('bs.modal').modal({
-                        backdrop: modal.backdrop,
-                        keyboard: modal.keyboard,
-                        show: true
-                    });
+            try {
+                self.currentModal(modal);
 
-                    if (!self.$modalElement.hasClass('in')) {
-                        self.$modalElement.modal('show')
-                            .on('shown.bs.modal', function( /*e*/ ) {
-                                resolveShown(self, dfd);
-                            });
-                    } else {
-                        resolveShown(self, dfd);
-                    }
-                } catch (err) {
-                    self.isModalOpenening(false);
-                    deferred.reject(err);
-                    dfd.reject(err);
+                self.$modalElement.removeData('bs.modal').modal({
+                    backdrop: modal.backdrop,
+                    keyboard: modal.keyboard,
+                    show: true
+                });
+
+                if (!self.$modalElement.hasClass('in')) {
+                    self.$modalElement.modal('show');
+
+                    // We use a timeout because the shown.bs.modal event is not reliable
+                    // For example, if the page is in a background tab, it won't be triggered
+                    setTimeout(function() {
+                        resolveShown(self, dfd, modal);
+                    }, TRANSITION_DURATION);
+                } else {
+                    resolveShown(self, dfd);
                 }
-            }).promise();
+            } catch (err) {
+                self.isModalOpening(false);
+                modal.deferred.reject(err);
+                dfd.reject(err);
+            }
+
+            return dfd.promise();
         }
 
-        function resolveShown(self, dfd) {
-            self.isModalOpenening(false);
-            self.currentModal().settings.shown(true);
+        function showQueuedModal(self) {
+            var modal = self.modalQueue.shift();
+            if (modal) {
+                show(self, modal).always(modal.callback);
+            }
+        }
 
-            self.focused(self.currentModal().settings.params && !self.currentModal().settings.params.preventFocus);
+        function resolveShown(self, dfd, modal) {
+            self.isModalOpening(false);
+            modal.settings.shown(true);
 
-            dfd.resolve(self.$modalElement);            
+            self.focused(modal.settings.params && !modal.settings.params.preventFocus);
+
+            dfd.resolve(self.$modalElement);
         }
 
         function hideModal(self) {
-            return new $.Deferred(function(dfd) {
-                try {
-                    if (self.$modalElement.hasClass('in')) {
-                        self.$modalElement.modal('hide')
-                            .on('hidden.bs.modal', function( /*e*/ ) {
-                                dfd.resolve(self.$modalElement);
-                            });
-                    } else {
+            var dfd = $.Deferred();
+
+            try {
+                if (self.$modalElement.hasClass('in')) {
+                    self.$modalElement.modal('hide');
+
+                    // We use a timeout because the .bs.modal events are not reliable
+                    setTimeout(function() {
+                        var modal = self.currentModal();
+                        modal.deferred.resolve(modal.data);
+
+                        self.currentModal(null);
+
                         dfd.resolve(self.$modalElement);
-                    }
-                } catch (err) {
-                    dfd.reject(err);
+                    }, BACKDROP_TRANSITION_DURATION);
+                } else {
+                    dfd.resolve(self.$modalElement);
                 }
-            }).promise();
+            } catch (err) {
+                dfd.reject(err);
+            }
+
+            return dfd.promise();
         }
 
         function getModalElement() {

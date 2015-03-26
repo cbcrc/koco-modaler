@@ -1,5 +1,6 @@
 define(['knockout', 'modaler'],
     function(ko, modaler) {
+        'use strict';
 
         // Simple use: modal: 'modal-name'
         // Advanced use: modal: { name: 'modal-name', params: { ..params to pass to the modal }, shown: func, closed: func, failed: func }
@@ -19,7 +20,7 @@ define(['knockout', 'modaler'],
                 }
 
                 ko.applyBindingsToNode(element, {
-                    click: function(event) {
+                    click: function() {
                         modaler.show(options.name, options.params, options.shown)
                             .then(options.closed, options.failed)
                             .always(function() {
@@ -29,23 +30,4 @@ define(['knockout', 'modaler'],
                 });
             }
         };
-
-        function getOptions(valueAccessor) {
-            var value = ko.unwrap(valueAccessor());
-            var options = {};
-
-            if (typeof value === 'string') {
-                options.name = value;
-            } else {
-                options = {
-                    name: ko.unwrap(value.name),
-                    params: ko.unwrap(value.params),
-                    shown: ko.unwrap(value.shown),
-                    closed: ko.unwrap(value.closed),
-                    failed: ko.unwrap(value.failed)
-                };
-            }
-
-            return options;
-        }
     });

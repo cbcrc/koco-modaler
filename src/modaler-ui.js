@@ -1,5 +1,6 @@
 define(['modaler', 'text!./modaler.html'],
     function(modaler, template) {
+        'use strict';
 
         var ViewModel = function (params, componentInfo) {
             var self = this;
