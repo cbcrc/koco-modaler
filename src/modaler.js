@@ -9,11 +9,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             TRANSITION_DURATION = $.fn.modal.Constructor.TRANSITION_DURATION;
         }
 
-        var BACKDROP_TRANSITION_DURATION = 150;
-        if ($.fn.modal.Constructor && $.fn.modal.Constructor.BACKDROP_TRANSITION_DURATION) {
-            BACKDROP_TRANSITION_DURATION = $.fn.modal.Constructor.BACKDROP_TRANSITION_DURATION;
-        }
-
         function Modaler() {
             var self = this;
 
@@ -84,13 +79,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                 settings: {
                     close: function(data) {
                         modal.data = data;
-
-                        var hide = hideModal(self);
-                        hide.done(function () {
-                            showQueuedModal(self);
-                        });
-
-                        return hide;
+                        return hideModal(self);
                     },
                     shown: ko.observable(false),
                     params: params,
@@ -219,6 +208,12 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     show: true
                 });
 
+                self.$modalElement.one('hidden.bs.modal', function() {
+                    modal.deferred.resolve(modal.data);
+                    self.currentModal(null);
+                    showQueuedModal(self);
+                });
+
                 if (!self.$modalElement.hasClass('in')) {
                     self.$modalElement.modal('show');
 
@@ -260,17 +255,9 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             try {
                 if (self.$modalElement.hasClass('in')) {
-                    self.$modalElement.modal('hide');
-
-                    // We use a timeout because the .bs.modal events are not reliable
-                    setTimeout(function() {
-                        var modal = self.currentModal();
-                        modal.deferred.resolve(modal.data);
-
-                        self.currentModal(null);
-
+                    self.$modalElement.one('hidden.bs.modal', function() {
                         dfd.resolve(self.$modalElement);
-                    }, BACKDROP_TRANSITION_DURATION);
+                    }).modal('hide');
                 } else {
                     dfd.resolve(self.$modalElement);
                 }
