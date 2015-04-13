@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Allov/knockout-modaler.git"
+    "url": "https://github.com/cbcrc/knockout-modaler.git"
   },
-  "author": "Allov & w3max",
+  "author": "Frédérik Charest & Maxime Séguin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Allov/knockout-modaler/issues"
+    "url": "https://github.com/cbcrc/knockout-modaler/issues"
   },
-  "homepage": "https://github.com/Allov/knockout-modaler"
+  "homepage": "https://github.com/cbcrc/knockout-modaler"
 }

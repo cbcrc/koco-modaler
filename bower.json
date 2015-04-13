@@ -2,7 +2,7 @@
   "name": "knockout-modaler",
   "version": "0.1.32",
   "authors": [
-    "Allov & w3max"
+    "Frédérik Charest & Maxime Séguin"
   ],
   "description": "",
   "main": "src/modaler.js",

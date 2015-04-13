@@ -1,6 +1,6 @@
 # Knockout Modaler
 
-Knockout Modaler is a knockout component used to display modal screen. It is an opinionated component based on the [Koco generator](https://github.com/Allov/generator-koco).
+Knockout Modaler is a knockout component used to display modal screen. It is an opinionated component based on the [Koco generator](https://github.com/cbcrc/generator-koco).
 
 ## Table of contents
 
