@@ -1,6 +1,6 @@
 {
-  "name": "knockout-modaler",
-  "version": "0.1.0",
+  "name": "koco-modaler",
+  "version": "0.2.0",
   "description": "",
   "main": "src/modaler.js",
   "scripts": {
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cbcrc/knockout-modaler.git"
+    "url": "https://github.com/cbcrc/koco-modaler.git"
   },
   "author": "Frédérik Charest & Maxime Séguin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cbcrc/knockout-modaler/issues"
+    "url": "https://github.com/cbcrc/koco-modaler/issues"
   },
-  "homepage": "https://github.com/cbcrc/knockout-modaler"
+  "homepage": "https://github.com/cbcrc/koco-modaler"
 }
