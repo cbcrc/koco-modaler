@@ -15,7 +15,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             self.$document = $(document);
 
             koUtilities.registerComponent('modaler', {
-                basePath: 'bower_components/knockout-modaler/src'
+                basePath: 'bower_components/koco-modaler/src'
             });
 
             self.modalConfigs = [];
