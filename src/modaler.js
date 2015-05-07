@@ -18,6 +18,11 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                 basePath: 'bower_components/koco-modaler/src'
             });
 
+            koUtilities.registerComponent('modal', {
+                htmlOnly: true,
+                basePath: 'bower_components/koco-modaler/src'
+            });
+
             self.modalConfigs = [];
             self.currentModal = ko.observable(null);
             self.showModalQueue = [];
