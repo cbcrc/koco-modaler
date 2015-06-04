@@ -137,8 +137,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             var self = this;
             var dfd = $.Deferred();
 
-            self.isModalHiding(true);
-
             try {
                 if (self.isModalOpening()) {
                     var sub = self.isModalOpening.subscribe(function() {
@@ -160,6 +158,8 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             var currentModal = self.currentModal();
 
             if (currentModal) {
+                self.isModalHiding(true);
+
                 currentModal.settings.close(null, options).then(function() {
                     self.isModalHiding(false);
                     dfd.resolve();
