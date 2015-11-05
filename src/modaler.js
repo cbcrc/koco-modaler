@@ -14,13 +14,13 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
 
             self.$document = $(document);
 
-            koUtilities.registerComponent('modaler', {
-                basePath: 'bower_components/koco-modaler/src'
+            ko.components.register('modaler', {
+                isBower: true,
             });
 
-            koUtilities.registerComponent('modal', {
-                htmlOnly: true,
-                basePath: 'bower_components/koco-modaler/src'
+            ko.components.register('modal', {
+                basePath: 'bower_components/koco-modaler/src',
+                htmlOnly: true
             });
 
             self.modalConfigs = [];
@@ -178,7 +178,7 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
             modalConfig.name = name;
 
             var componentConfig = buildComponentConfigFromModalConfig(name, modalConfig);
-            koUtilities.registerComponent(componentConfig.name, componentConfig);
+            ko.components.register(componentConfig.name, componentConfig);
 
             var finalModalConfig = applyModalConventions(name, modalConfig, componentConfig);
 
