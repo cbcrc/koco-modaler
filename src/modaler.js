@@ -118,7 +118,6 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     });
                 }
             } else if (self.currentModal()) {
-                console.log('ici...');
                 self.hideCurrentModal({
                     noTransition: true
                 }).then(function() {
