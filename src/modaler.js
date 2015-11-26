@@ -254,9 +254,9 @@ define(['jquery', 'bootstrap', 'knockout', 'lodash', 'knockout-utilities'],
                     show: true
                 });
 
-                self.$modalElement.on('hidden.bs.modal', function() {
-                    modal.deferred.resolve(modal.data);
+                self.$modalElement.one('hidden.bs.modal', function() {
                     self.currentModal(null);
+                    modal.deferred.resolve(modal.data);
                 });
 
                 if (!self.$modalElement.hasClass('in')) {
