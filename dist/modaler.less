@@ -1,0 +1,29 @@
+// Copyright (c) CBC/Radio-Canada. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+modaler > div:focus {
+	outline: none;
+}
+modaler{
+    .vertical-alignment-helper {
+        display: table;
+        height: 60%;
+        width: 100%;
+        pointer-events: none;
+        /* This makes sure that we can still click outside of the modal to close it */
+    }
+    modal {
+        /* To center vertically */
+        display: table-cell;
+        vertical-align: middle;
+        pointer-events: none;
+    }
+    .modal-content {
+        /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+        width: inherit;
+        height: inherit;
+        /* To center horizontally */
+        margin: 0 auto;
+        pointer-events: all;
+    }
+}
