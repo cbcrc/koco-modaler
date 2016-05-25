@@ -11,12 +11,16 @@
     "build": "rm -rf dist && mkdir dist && cp -r src/* dist && rm -rf dist/*.js && babel src --out-dir dist --modules umd --presets es2015,stage-0"
   },
   "dependencies": {
-    "jquery": "^2.1.3",
-    "bootstrap": "^3.3.2",
-    "knockout": "^3.3.0",
-    "lodash": "^3.0.0",
-    "requirejs": "^2.1.15",
-    "requirejs-text": "^2.0.13",
-    "koco-knockout-utilities": "^0.4.0"
+    "bootstrap": "^3.3.6",
+    "jquery": "^2.2.4",
+    "knockout": "^3.4.0",
+    "koco": "^1.0.0",
+    "koco-knockout-utilities": "^1.1.0",
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0"
   }
 }
