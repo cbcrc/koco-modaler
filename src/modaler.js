@@ -2,7 +2,7 @@ import $ from 'jquery';
 import bootstrap from 'bootstrap';
 import ko from 'knockout';
 import _ from 'lodash';
-import koUtilities from from 'koco-knockout-utilities';
+import koUtilities from 'koco-knockout-utilities';
 
 
 var KEYCODE_ESC = 27;

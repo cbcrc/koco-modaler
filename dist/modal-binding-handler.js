@@ -4,9 +4,9 @@ var _knockout = require('knockout');
 
 var _knockout2 = _interopRequireDefault(_knockout);
 
-var _modaler = require('modaler');
+var _kocoModaler = require('koco-modaler');
 
-var _modaler2 = _interopRequireDefault(_modaler);
+var _kocoModaler2 = _interopRequireDefault(_kocoModaler);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,7 +31,7 @@ _knockout2.default.bindingHandlers.modal = {
 
         _knockout2.default.applyBindingsToNode(element, {
             click: function click() {
-                _modaler2.default.show(options.name, options.params, options.shown).then(options.closed, options.failed).always(function () {
+                _kocoModaler2.default.show(options.name, options.params, options.shown).then(options.closed, options.failed).always(function () {
                     element.focus();
                 });
             }
