@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import ko from 'knockout';
-import modaler from 'modaler';
+import modaler from 'koco-modaler';
 
 
 // Simple use: modal: 'modal-name'

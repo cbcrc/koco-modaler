@@ -20,9 +20,9 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _knockoutUtilities = require('knockout-utilities');
+var _kocoKnockoutUtilities = require('koco-knockout-utilities');
 
-var _knockoutUtilities2 = _interopRequireDefault(_knockoutUtilities);
+var _kocoKnockoutUtilities2 = _interopRequireDefault(_kocoKnockoutUtilities);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -242,7 +242,7 @@ function registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen) {
 }
 
 function isModalerReady(self) {
-    return _knockoutUtilities2.default.koBindingDone(self.$modalElement, null, null, true);
+    return _kocoKnockoutUtilities2.default.koBindingDone(self.$modalElement, null, null, true);
 }
 
 function buildComponentConfigFromModalConfig(name, modalConfig) {
