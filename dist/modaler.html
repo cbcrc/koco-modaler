@@ -1,6 +1,6 @@
 <!-- Copyright (c) CBC/Radio-Canada. All rights reserved.
 Licensed under the MIT license. See LICENSE file in the project root for full license information. -->
 
-<!-- ko if: modaler && modaler.isModalOpen() -->
-<div data-bind="component: { name: modaler.currentModal().componentName, params: modaler.currentModal().settings }, hasFocus: modaler.focused" tabindex="-1" class="vertical-alignment-helper"></div>
+<!-- ko if: $parent.modaler && $parent.modaler.isModalOpen() -->
+<div data-bind="component: { name: $parent.modaler.currentModal().componentName, params: $parent.modaler.currentModal().settings }, hasFocus: $parent.modaler.focused" tabindex="-1" class="vertical-alignment-helper"></div>
 <!-- /ko -->
