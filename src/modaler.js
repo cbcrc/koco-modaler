@@ -4,7 +4,6 @@ import ko from 'knockout';
 import _ from 'lodash';
 import koUtilities from 'koco-knockout-utilities';
 
-
 var KEYCODE_ESC = 27;
 
 var TRANSITION_DURATION = 300;
@@ -14,8 +13,6 @@ if ($.fn.modal.Constructor && $.fn.modal.Constructor.TRANSITION_DURATION) {
 
 function Modaler() {
     var self = this;
-
-    self.$document = $(document);
 
     ko.components.register('modaler', {
         isBower: true,
@@ -214,9 +211,9 @@ function registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen) {
     }
 
     if ((isModalOpen && !self.currentModal().settings.params) || (isModalOpen && (self.currentModal().settings.params && !self.currentModal().settings.params.disableKeyEvents))) {
-        self.$document.on('keydown', $.proxy(self.hideCurrentModalHandler, self));
+        $(document).on('keydown', $.proxy(self.hideCurrentModalHandler, self));
     } else {
-        self.$document.off('keydown', $.proxy(self.hideCurrentModalHandler, self));
+        $(document).off('keydown', $.proxy(self.hideCurrentModalHandler, self));
     }
 }
 

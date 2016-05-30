@@ -36,8 +36,6 @@ if (_jquery2.default.fn.modal.Constructor && _jquery2.default.fn.modal.Construct
 function Modaler() {
     var self = this;
 
-    self.$document = (0, _jquery2.default)(document);
-
     _knockout2.default.components.register('modaler', {
         isBower: true
     });
@@ -235,9 +233,9 @@ function registerOrUnregisterHideModalKeyboardShortcut(self, isModalOpen) {
     }
 
     if (isModalOpen && !self.currentModal().settings.params || isModalOpen && self.currentModal().settings.params && !self.currentModal().settings.params.disableKeyEvents) {
-        self.$document.on('keydown', _jquery2.default.proxy(self.hideCurrentModalHandler, self));
+        (0, _jquery2.default)(document).on('keydown', _jquery2.default.proxy(self.hideCurrentModalHandler, self));
     } else {
-        self.$document.off('keydown', _jquery2.default.proxy(self.hideCurrentModalHandler, self));
+        (0, _jquery2.default)(document).off('keydown', _jquery2.default.proxy(self.hideCurrentModalHandler, self));
     }
 }
 
