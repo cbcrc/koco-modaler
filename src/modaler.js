@@ -16,6 +16,7 @@ function Modaler() {
 
     ko.components.register('modaler', {
         isBower: true,
+        htmlOnly: true
     });
 
     ko.components.register('modal', {
