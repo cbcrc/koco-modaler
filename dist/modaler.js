@@ -45,12 +45,12 @@
 
         _knockout2.default.components.register('modaler', {
             isNpm: true,
-            htmlOnly: true
+            isHtmlOnly: true
         });
 
         _knockout2.default.components.register('modal', {
             basePath: 'bower_components/koco-modaler/src',
-            htmlOnly: true
+            isHtmlOnly: true
         });
 
         self.modalConfigs = [];
@@ -254,7 +254,7 @@
     function buildComponentConfigFromModalConfig(name, modalConfig) {
         return {
             name: name + '-modal',
-            htmlOnly: modalConfig.htmlOnly,
+            isHtmlOnly: modalConfig.isHtmlOnly,
             basePath: modalConfig.basePath,
             isNpm: modalConfig.isNpm,
             type: 'modal'

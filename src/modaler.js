@@ -16,12 +16,12 @@ function Modaler() {
 
     ko.components.register('modaler', {
         isNpm: true,
-        htmlOnly: true
+        isHtmlOnly: true
     });
 
     ko.components.register('modal', {
         basePath: 'bower_components/koco-modaler/src',
-        htmlOnly: true
+        isHtmlOnly: true
     });
 
     self.modalConfigs = [];
@@ -225,7 +225,7 @@ function isModalerReady(self) {
 function buildComponentConfigFromModalConfig(name, modalConfig) {
     return {
         name: name + '-modal',
-        htmlOnly: modalConfig.htmlOnly,
+        isHtmlOnly: modalConfig.isHtmlOnly,
         basePath: modalConfig.basePath,
         isNpm: modalConfig.isNpm,
         type: 'modal'
