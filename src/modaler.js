@@ -15,7 +15,7 @@ function Modaler() {
     var self = this;
 
     ko.components.register('modaler', {
-        isBower: true,
+        isNpm: true,
         htmlOnly: true
     });
 
@@ -227,7 +227,7 @@ function buildComponentConfigFromModalConfig(name, modalConfig) {
         name: name + '-modal',
         htmlOnly: modalConfig.htmlOnly,
         basePath: modalConfig.basePath,
-        isBower: modalConfig.isBower,
+        isNpm: modalConfig.isNpm,
         type: 'modal'
     };
 }

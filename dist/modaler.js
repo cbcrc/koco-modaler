@@ -44,7 +44,7 @@
         var self = this;
 
         _knockout2.default.components.register('modaler', {
-            isBower: true,
+            isNpm: true,
             htmlOnly: true
         });
 
@@ -256,7 +256,7 @@
             name: name + '-modal',
             htmlOnly: modalConfig.htmlOnly,
             basePath: modalConfig.basePath,
-            isBower: modalConfig.isBower,
+            isNpm: modalConfig.isNpm,
             type: 'modal'
         };
     }
