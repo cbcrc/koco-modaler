@@ -25,8 +25,9 @@ ko.bindingHandlers.modal = {
         ko.applyBindingsToNode(element, {
             click: function() {
                 modaler.show(options.name, options.params, options.shown)
-                    .then(options.closed, options.failed)
-                    .always(function() {
+                    .then(options.closed)
+                    .catch(options.failed)
+                    .then(function() {
                         element.focus();
                     });
             }

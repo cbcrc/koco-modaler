@@ -148,7 +148,7 @@
             self.showModalQueue = [];
 
             if (lastModal) {
-              show(self, lastModal).always(lastModal.callback);
+              show(self, lastModal).catch(function (ex) {}).then(lastModal.callback);
             }
           });
         }
@@ -156,11 +156,11 @@
         self.hideCurrentModal({
           noTransition: true
         }).then(function () {
-          show(self, modal).always(modal.callback);
+          show(self, modal).catch(function (ex) {}).then(modal.callback);
         });
       } else {
         isModalerReady(self).then(function () {
-          show(self, modal).always(modal.callback);
+          show(self, modal).catch(function (ex) {}).then(modal.callback);
         });
       }
     });
@@ -229,7 +229,7 @@
         var lastModal = self.showModalQueue.pop();
         self.showModalQueue = [];
         if (lastModal) {
-          show(self, lastModal).always(lastModal.callback);
+          show(self, lastModal).catch(function (ex) {}).then(lastModal.callback);
         }
       });
     }
