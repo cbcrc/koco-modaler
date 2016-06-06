@@ -1,16 +1,16 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(['exports', 'jquery', 'bootstrap', 'knockout', 'lodash', 'koco-knockout-utilities'], factory);
+    define(['exports', 'jquery', 'knockout', 'lodash', 'koco-knockout-utilities', 'promise-defer'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require('jquery'), require('bootstrap'), require('knockout'), require('lodash'), require('koco-knockout-utilities'));
+    factory(exports, require('jquery'), require('knockout'), require('lodash'), require('koco-knockout-utilities'), require('promise-defer'));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.jquery, global.bootstrap, global.knockout, global.lodash, global.kocoKnockoutUtilities);
+    factory(mod.exports, global.jquery, global.knockout, global.lodash, global.kocoKnockoutUtilities, global.promiseDefer);
     global.modaler = mod.exports;
   }
-})(this, function (exports, _jquery, _bootstrap, _knockout, _lodash, _kocoKnockoutUtilities) {
+})(this, function (exports, _jquery, _knockout, _lodash, _kocoKnockoutUtilities, _promiseDefer) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -19,13 +19,13 @@
 
   var _jquery2 = _interopRequireDefault(_jquery);
 
-  var _bootstrap2 = _interopRequireDefault(_bootstrap);
-
   var _knockout2 = _interopRequireDefault(_knockout);
 
   var _lodash2 = _interopRequireDefault(_lodash);
 
   var _kocoKnockoutUtilities2 = _interopRequireDefault(_kocoKnockoutUtilities);
+
+  var _promiseDefer2 = _interopRequireDefault(_promiseDefer);
 
   function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
@@ -49,8 +49,9 @@
     });
 
     _knockout2.default.components.register('modal', {
-      basePath: 'bower_components/koco-modaler/src',
-      isHtmlOnly: true
+      basePath: 'koco-modaler/src',
+      isHtmlOnly: true,
+      isNpm: true
     });
 
     self.modalConfigs = [];
@@ -110,11 +111,6 @@
         throw new Error('Modaler.show - Unregistered modal: ' + name);
       }
 
-      var shownDeferred = void 0;
-      new Promise(function (resolve2, reject2) {
-        shownDeferred = { resolve2: resolve2, reject2: reject2 };
-      });
-
       var modal = {
         settings: {
           close: function close(data, options) {
@@ -129,7 +125,7 @@
           resolve: resolve,
           reject: reject
         },
-        shownDeferred: shownDeferred,
+        shownDeferred: (0, _promiseDefer2.default)(),
         callback: callback,
         componentName: modalConfigToShow.componentName,
         // TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.show
@@ -292,10 +288,10 @@
         // We use a timeout because the shown.bs.modal event is not reliable
         // For example, if the page is in a background tab, it won't be triggered
         setTimeout(function () {
-          resolveShown(self, dfd, modal);
+          resolveShown(self, resolve, modal);
         }, TRANSITION_DURATION);
       } else {
-        resolveShown(self, dfd, modal);
+        resolveShown(self, resolve, modal);
       }
     });
 

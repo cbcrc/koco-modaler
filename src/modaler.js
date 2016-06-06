@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import bootstrap from 'bootstrap';
 import ko from 'knockout';
 import _ from 'lodash';
 import koUtilities from 'koco-knockout-utilities';
+import defer from 'promise-defer';
 
 var KEYCODE_ESC = 27;
 
@@ -20,8 +20,9 @@ function Modaler() {
   });
 
   ko.components.register('modal', {
-    basePath: 'bower_components/koco-modaler/src',
-    isHtmlOnly: true
+    basePath: 'koco-modaler/src',
+    isHtmlOnly: true,
+    isNpm: true
   });
 
   self.modalConfigs = [];
@@ -80,11 +81,6 @@ Modaler.prototype.show = function(name, params, callback) {
       throw new Error('Modaler.show - Unregistered modal: ' + name);
     }
 
-    let shownDeferred;
-    new Promise((resolve2, reject2) => {
-      shownDeferred = { resolve2, reject2 };
-    });
-
     var modal = {
       settings: {
         close: function(data, options) {
@@ -99,7 +95,7 @@ Modaler.prototype.show = function(name, params, callback) {
         resolve,
         reject
       },
-      shownDeferred,
+      shownDeferred: defer(),
       callback,
       componentName: modalConfigToShow.componentName,
       // TODO: On pourrait permettre d'overrider les settings de base (du registerModal) pour chaque affichage en passant backdrop & keyboard en plus a Modaler.prototype.show
@@ -262,10 +258,10 @@ function show(self, modal) {
       // We use a timeout because the shown.bs.modal event is not reliable
       // For example, if the page is in a background tab, it won't be triggered
       setTimeout(function() {
-        resolveShown(self, dfd, modal);
+        resolveShown(self, resolve, modal);
       }, TRANSITION_DURATION);
     } else {
-      resolveShown(self, dfd, modal);
+      resolveShown(self, resolve, modal);
     }
   });
 
