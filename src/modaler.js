@@ -269,10 +269,10 @@ function show(self, modal) {
     }
   });
 
-  promise.catch(ex) {
+  promise.catch(ex => {
     self.isModalOpening(false);
     modal.deferred.reject(ex);
-  }
+  });
 
   return promise;
 }
